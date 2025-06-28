@@ -1,6 +1,6 @@
 while True:
 	import keyboard
-	from rapidfuzz import process
+	from fuzzywuzzy import process
 	import time
 
 	pokemon_names = [
@@ -1036,9 +1036,9 @@ while True:
 
 
 	typed_word = typed[-1]  # user typo
-	match, score, _ = process.extractOne(typed_word, pokemon_names)
+	match, score = process.extractOne(typed_word, pokemon_names)
 
-	if score > 30:  # adjust threshold to your liking
+	if score > 90:  # adjust threshold to your liking
 		keyboard.send("ctrl+shift+left")
-		keyboard.write(match) 
+		keyboard.write(match.lower()) 
 		time.sleep(2) 
