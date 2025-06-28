@@ -1,6 +1,7 @@
 import keyboard
 
-while True:
-    print(keyboard.read_key())
-    if keyboard.read_key() == "a":
-        keyboard.write("lol")
+events = keyboard.record(until='space')  # records all events until 'space' is pressed
+
+typed = list(keyboard.get_typed_strings(events, allow_backspace=True))
+
+print("You typed:", typed[-1])
