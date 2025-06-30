@@ -1,9 +1,10 @@
 while True:
-	import keyboard
-	from fuzzywuzzy import process
-	import time
+    import tkinter as tk
+    from rapidfuzz import process
+    import keyboard  # Global key listener
+    import time
 
-	pokemon_names = [
+    pokemon_names = [
 	"Bulbasaur",
 	"Ivysaur",
 	"Venusaur",
@@ -1030,15 +1031,64 @@ while True:
 	"Terapagos",
 	"Pecharunt"
 ]
-	events = keyboard.record(until='space')  # records all events until 'space' is pressed
+    events = keyboard.record(until='space')  # records all events until 'space' is pressed
 
-	typed = list(keyboard.get_typed_strings(events, allow_backspace=True))
+    typed = list(keyboard.get_typed_strings(events, allow_backspace=False))
+ 
+    typed_word = typed[-1]  # user typo
+    match, score, _ = process.extractOne(typed_word, pokemon_names)
 
+    matches = process.extract(typed_word,pokemon_names) 
+    
+    if score > 70:  # adjust threshold to your liking
+        for _ in range(len(match)): 
+            keyboard.send("backspace") 
+        # keyboard.send("ctrl+shift+left")
+        keyboard.write(match.lower())   
+        time.sleep(0.5)   
 
-	typed_word = typed[-1]  # user typo
-	match, score = process.extractOne(typed_word, pokemon_names)
+# import tkinter as tk
+# from rapidfuzz import process
+# import keyboard  # Global key listener
 
-	if score > 90:  # adjust threshold to your liking
-		keyboard.send("ctrl+shift+left")
-		keyboard.write(match.lower()) 
-		time.sleep(2) 
+# --- Data ---
+
+# --- GUI Setup ---
+#     root = tk.Tk()
+#     root.title("Pokémon Matcher")
+#     root.geometry("250x150+100+100")
+#     root.attributes("-topmost", True)
+#     root.resizable(False, False)
+
+#     result_text = tk.Text(root, height=8, font=('Arial', 12))
+#     result_text.pack()
+
+# # --- Global Typing Capture ---  
+#     typed = ""
+
+#     def update_overlay(matches):
+#         result_text.delete('1.0', tk.END)
+#     for name, score, _ in matches:
+#         result_text.insert(tk.END, f"{name} ({score:.0f}%)\n")
+
+#     def on_key(e):
+#         global typed
+
+#         if e.name == 'space':
+#             typed = ""
+#             update_overlay([])
+#         elif e.name == 'backspace':
+#             typed = typed[:-1]
+#         elif len(e.name) == 1:
+#             typed += e.name
+
+#         if typed:
+#             matches = process.extract(typed, pokemon_names, limit=5, score_cutoff=60)
+#             update_overlay(matches)
+
+# # Listen to all keys globally 
+#         keyboard.on_press(on_key)
+
+# # Start GUI loop
+#         root.mainloop() 
+  
